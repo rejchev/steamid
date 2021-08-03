@@ -7,6 +7,24 @@
     <groupId>com.github.rejchev</groupId>
     <artifactId>steamid</artifactId>
     <version>1.0.0</version>
+
+    <name>SteamID</name>
+    <description>A SteamID is a unique identifier used to identify a Steam account.</description>
+    <licenses>
+        <license>
+            <name>GNU General Public License version 3</name>
+            <url>https://opensource.org/licenses/GPL-3.0</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>rejchev</id>
+            <name>Andrew Cat</name>
+            <email>undertowna@gmail.com</email>
+        </developer>
+    </developers>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
