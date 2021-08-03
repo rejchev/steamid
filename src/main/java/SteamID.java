@@ -13,7 +13,7 @@ public class SteamID {
 
     /** NOTE:
      *
-     *  The next 31 bits represents the account number.
+     *  31 bits represents the account number.
      *  Also known as constant Z
      *
      */
@@ -21,7 +21,7 @@ public class SteamID {
 
     /** NOTE:
      *
-     *  The next 20 bits represents the instance of the account.
+     *  20 bits represents the instance of the account.
      *  It is usually set to 1 for user accounts.
      *
      */
@@ -29,16 +29,16 @@ public class SteamID {
 
     /** NOTE:
      *
-     *  The next 4 bits represents the type of account. Also known as constant: V
+     *  4 bits represents the type of account. Also known as constant: V
      *  Used in generating the W constant for Steam64:
-     *      (https://steamcommunity.com/path/W -> W=Z*2+V+Y)
+     *      (https://steamcommunity.com/path/W : W=Z*2+V+Y)
      *
      */
     private SteamIDType type;
 
     /** NOTE:
      *
-     *  The next 8 bits represents the "Universe" the steam account belongs to.
+     *  8 bits represents the "Universe" the steam account belongs to.
      *  Also known as constant: X
      *
      */
@@ -47,13 +47,6 @@ public class SteamID {
 
     public SteamID(){}
 
-    /**
-     * SteamID Constructor
-     *
-     * @param id Steam64 value
-     * @return <tt>SteamID</tt> object
-     *
-     */
     public SteamID(long id) throws SteamViewException {
         if(id < Integer.MAX_VALUE)
             throw new SteamViewException("Invalid Steam ID constructor type");
