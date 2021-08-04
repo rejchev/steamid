@@ -37,7 +37,20 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <project.scm.id>github</project.scm.id>
     </properties>
+
+    <scm>
+        <developerConnection>scm:git:https://github.com/rejchev/steamid.git</developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub</name>
+            <url>https://maven.pkg.github.com/rejchev/steamid</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <plugins>
