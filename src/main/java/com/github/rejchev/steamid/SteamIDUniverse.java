@@ -1,3 +1,4 @@
+package com.github.rejchev.steamid;
 
 public enum SteamIDUniverse {
     INDIVIDUAL,

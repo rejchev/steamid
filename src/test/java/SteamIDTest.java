@@ -1,6 +1,9 @@
-import exceptions.SteamViewException;
+import com.github.rejchev.steamid.exceptions.SteamViewException;
 import org.junit.Assert;
 import org.junit.Test;
+import com.github.rejchev.steamid.SteamID;
+import com.github.rejchev.steamid.SteamIDType;
+import com.github.rejchev.steamid.SteamIDUniverse;
 
 public class SteamIDTest {
 

@@ -1,3 +1,5 @@
+package com.github.rejchev.steamid;
+
 public class SteamIDUtils {
     public SteamIDUtils() {}
 

@@ -1,4 +1,6 @@
-import exceptions.SteamViewException;
+package com.github.rejchev.steamid;
+
+import com.github.rejchev.steamid.exceptions.SteamViewException;
 
 import java.util.Arrays;
 

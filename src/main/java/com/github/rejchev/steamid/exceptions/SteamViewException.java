@@ -1,4 +1,4 @@
-package exceptions;
+package com.github.rejchev.steamid.exceptions;
 
 public class SteamViewException extends Exception {
 

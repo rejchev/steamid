@@ -1,4 +1,4 @@
-import java.util.Arrays;
+package com.github.rejchev.steamid;
 
 public enum SteamIDType {
     INVALID ("I"),
