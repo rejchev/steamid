@@ -49,4 +49,17 @@ public class SteamIDTest {
 
         Assert.assertEquals(expectedSteamID, steamID);
     }
+
+    @Test
+    public void steamIDViewException() throws SteamViewException {
+        SteamID steamID;
+
+        try{
+            steamID = new SteamID(76561L);
+        } catch(SteamViewException e) {
+            steamID = null;
+        }
+
+        Assert.assertNull(steamID);
+    }
 }

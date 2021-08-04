@@ -15,7 +15,7 @@ public class SteamIDUtilsTest {
 
     @Test
     public void steamIDAsSteam3() {
-        String expectedSteamID3 = "[U:1:907378852]";
+        String expectedSteamID3 = "[A:1:907378852:1]";
 
         SteamID steamID = new SteamID(expectedSteamID3);
 

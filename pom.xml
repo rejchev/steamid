@@ -25,12 +25,6 @@
         </developer>
     </developers>
 
-    <scm>
-        <url>https://github.com/rejchev/steamid</url>
-        <connection>scm:git:git://github.com/rejchev/steamid.git</connection>
-        <developerConnection>scm:git:git@github.com:rejchev/steamid.git</developerConnection>
-    </scm>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -44,12 +38,6 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
 
     <build>
         <plugins>

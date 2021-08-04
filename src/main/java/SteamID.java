@@ -59,36 +59,38 @@ public class SteamID {
     }
 
     public SteamID(String value) {
-        if(value == null)
-            throw new IllegalArgumentException("Steam ID param is null");
-
         boolean isSteam2 = value.contains("STEAM_");
-        value = value.trim().replaceAll("[\\[\\]STEAM_]", "");
+        value = value
+                .trim()
+                .replaceAll("[\\[\\]]", "")
+                .replaceAll("STEAM_", "");
 
-        String[] numbers = value.split(":");
+        String[] params = value.split(":");
 
         if(isSteam2) {
-            universe = SteamIDUniverse.values()[Integer.parseInt(numbers[0])];
-            y = Byte.parseByte(numbers[1]);
-            z = Integer.parseInt(numbers[2]);
+            universe = SteamIDUniverse.values()[Integer.parseInt(params[0])];
+            y = Byte.parseByte(params[1]);
+            z = Integer.parseInt(params[2]);
 
             type = SteamIDType.INDIVIDUAL;
+            instance = 1;
         } else {
+
+            // https://github.com/SteamRE/open-steamworks/blob/f65c0439bf06981285da1e7639de82cd760755b7/Open%20Steamworks/CSteamID.h#L385
             type = Arrays.stream(SteamIDType.values())
-                    .filter(x -> x.getLetter().equals(numbers[0]))
+                    .filter(x -> x.getLetter().equals(params[0]))
                     .findFirst().get();
-            // [1] - ???
+
+            universe = SteamIDUniverse.values()[Integer.parseInt(params[1])];
 
             // W = z*2+Y
-            long w = Long.parseLong(numbers[2]);
+            // https://developer.valvesoftware.com/wiki/SteamID
+            long w = Long.parseLong(params[2]);
             z = (int) w/2;
             y = (byte) (w - z*2);
 
-            universe = SteamIDUniverse.PUBLIC;
+            instance = (params.length > 3) ? Short.parseShort(params[3]) : 1;
         }
-
-        // TODO: Instance enum
-        instance = 1;
     }
 
     public byte getY() {

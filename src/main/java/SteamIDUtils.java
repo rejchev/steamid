@@ -5,9 +5,21 @@ public class SteamIDUtils {
         return String.format("STEAM_%d:%d:%d", steamID.getUniverse().ordinal(), steamID.getY(), steamID.getZ());
     }
 
-    // TODO: Extend the flexibility of presentation
+    // https://github.com/SteamRE/open-steamworks/blob/f65c0439bf06981285da1e7639de82cd760755b7/Open%20Steamworks/CSteamID.h#L385
     public static String viewAsSteam3(SteamID steamID) {
-        return String.format("[%s:1:%d]", steamID.getType().getLetter(), (steamID.getZ()*2 + steamID.getY()));
+        return (steamID.getType() == SteamIDType.ANON_GAME_SERVER || steamID.getType() == SteamIDType.MULTISEAT)
+                    ?   String.format(
+                            "[%s:%d:%d:%d]",
+                            steamID.getType().getLetter(),
+                            steamID.getUniverse().ordinal(),
+                            (steamID.getZ()*2 + steamID.getY()),
+                            steamID.getInstance())
+
+                    :   String.format(
+                            "[%s:%d:%d]",
+                            steamID.getType().getLetter(),
+                            steamID.getUniverse().ordinal(),
+                            (steamID.getZ()*2 + steamID.getY()));
     }
 
     public static long viewAsSteam64(SteamID steamID) {
