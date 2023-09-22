@@ -27,7 +27,7 @@ public class SteamID {
      *  It is usually set to 1 for user accounts.
      *
      */
-    private short instance;
+    private int instance;
 
     /** NOTE:
      *
@@ -55,7 +55,7 @@ public class SteamID {
 
         y = (byte) (id & 0x1);
         z = ((int) id) >> 1;
-        instance = (short) ((id >> 32) & 0xFFFFF);
+        instance = (int) ((id >> 32) & 0xFFFFF);
         type = SteamIDType.values()[(int) ((id >> 52) & 0xF)];
         universe = SteamIDUniverse.values()[(int) (id >> 56)];
     }
@@ -91,7 +91,7 @@ public class SteamID {
             z = (int) w/2;
             y = (byte) (w - z*2);
 
-            instance = (params.length > 3) ? Short.parseShort(params[3]) : 1;
+            instance = (params.length > 3) ? Integer.parseInt(params[3]) : 1;
         }
     }
 
@@ -111,7 +111,7 @@ public class SteamID {
         this.z = z;
     }
 
-    public short getInstance() {
+    public int getInstance() {
         return instance;
     }
 
