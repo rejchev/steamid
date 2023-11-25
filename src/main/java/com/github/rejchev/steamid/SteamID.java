@@ -1,17 +1,25 @@
 package com.github.rejchev.steamid;
 
 import com.github.rejchev.steamid.exceptions.SteamViewException;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import java.util.Arrays;
+import java.util.Objects;
 
-public class SteamID {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public final class SteamID {
     /** NOTE:
      *
      *  The lowest bit of Steam64 represents Y.
      *  Y is part of the ID number for the account. Y is either 0 or 1.
      *
      */
-    private byte y;
+    Byte y;
 
     /** NOTE:
      *
@@ -19,7 +27,7 @@ public class SteamID {
      *  Also known as constant Z
      *
      */
-    private int z;
+    Integer z;
 
     /** NOTE:
      *
@@ -27,7 +35,7 @@ public class SteamID {
      *  It is usually set to 1 for user accounts.
      *
      */
-    private int instance;
+    Integer instance;
 
     /** NOTE:
      *
@@ -36,7 +44,7 @@ public class SteamID {
      *      (https://steamcommunity.com/path/W : W=Z*2+V+Y)
      *
      */
-    private SteamIDType type;
+    SteamIDType type;
 
     /** NOTE:
      *
@@ -44,94 +52,34 @@ public class SteamID {
      *  Also known as constant: X
      *
      */
-    private SteamIDUniverse universe;
+    SteamIDUniverse universe;
 
+    public SteamID(long sid64) throws SteamViewException {
+        if(sid64 < 0)
+            throw new SteamViewException("Invalid SteamID64 value: " + sid64);
 
-    public SteamID(){}
-
-    public SteamID(long id) throws SteamViewException {
-        if(id < Integer.MAX_VALUE)
-            throw new SteamViewException("Invalid Steam ID constructor type");
-
-        y = (byte) (id & 0x1);
-        z = ((int) id) >> 1;
-        instance = (int) ((id >> 32) & 0xFFFFF);
-        type = SteamIDType.values()[(int) ((id >> 52) & 0xF)];
-        universe = SteamIDUniverse.values()[(int) (id >> 56)];
+        y = (byte) (sid64 & 0x1);
+        z = ((int) sid64) >> 1;
+        instance = (int) ((sid64 >> 32) & 0xFFFFF);
+        type = SteamIDType.values()[(int) ((sid64 >> 52) & 0xF)];
+        universe = SteamIDUniverse.values()[(int) (sid64 >> 56)];
     }
 
-    public SteamID(String value) {
-        boolean isSteam2 = value.contains("STEAM_");
-        value = value
-                .trim()
-                .replaceAll("[\\[\\]]", "")
-                .replaceAll("STEAM_", "");
 
-        String[] params = value.split(":");
+    // SteamID32 = z*2+Y
+    // https://developer.valvesoftware.com/wiki/SteamID
+    public SteamID(Long sid32,
+                   Integer instance,
+                   SteamIDType type,
+                   SteamIDUniverse universe) throws SteamViewException {
+        if(sid32 < 0)
+            throw new SteamViewException("Invalid SteamId32 value: " + sid32);
 
-        if(isSteam2) {
-            universe = SteamIDUniverse.values()[Integer.parseInt(params[0])];
-            y = Byte.parseByte(params[1]);
-            z = Integer.parseInt(params[2]);
+        y = (byte) (sid32 % 2);
+        z = (int) ((sid32 - y) / 2);
 
-            type = SteamIDType.INDIVIDUAL;
-            instance = 1;
-        } else {
-
-            // https://github.com/SteamRE/open-steamworks/blob/f65c0439bf06981285da1e7639de82cd760755b7/Open%20Steamworks/CSteamID.h#L385
-            type = Arrays.stream(SteamIDType.values())
-                    .filter(x -> x.getLetter().equals(params[0]))
-                    .findFirst().get();
-
-            universe = SteamIDUniverse.values()[Integer.parseInt(params[1])];
-
-            // W = z*2+Y
-            // https://developer.valvesoftware.com/wiki/SteamID
-            long w = Long.parseLong(params[2]);
-            z = (int) w/2;
-            y = (byte) (w - z*2);
-
-            instance = (params.length > 3) ? Integer.parseInt(params[3]) : 1;
-        }
-    }
-
-    public byte getY() {
-        return y;
-    }
-
-    public void setY(byte y) {
-        this.y = y;
-    }
-
-    public int getZ() {
-        return z;
-    }
-
-    public void setZ(int z) {
-        this.z = z;
-    }
-
-    public int getInstance() {
-        return instance;
-    }
-
-    public void setInstance(short instance) {
         this.instance = instance;
-    }
-
-    public SteamIDType getType() {
-        return type;
-    }
-
-    public void setType(SteamIDType type) {
         this.type = type;
-    }
-
-    public SteamIDUniverse getUniverse() {
-        return universe;
-    }
-
-    public void setUniverse(SteamIDUniverse universe) {
         this.universe = universe;
     }
 
@@ -140,9 +88,9 @@ public class SteamID {
         if(obj instanceof SteamID) {
             SteamID input = (SteamID) obj;
 
-            return  this.y == input.getY() &&
-                    this.z == input.getZ() &&
-                    this.instance == input.getInstance() &&
+            return Objects.equals(this.y, input.getY()) &&
+                    Objects.equals(this.z, input.getZ()) &&
+                    Objects.equals(this.instance, input.getInstance()) &&
                     this.universe.ordinal() == input.getUniverse().ordinal() &&
                     this.type.ordinal() == input.getType().ordinal();
         }

@@ -13,13 +13,13 @@ public enum SteamIDType {
     P2P_SUPER_SEEDER(""),
     ANON_USER("a");
 
-    private String t;
+    private String l;
 
     SteamIDType(String i) {
-        t = i;
+        l = i;
     }
 
     public String getLetter() {
-        return t;
+        return l;
     }
 }

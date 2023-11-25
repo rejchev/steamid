@@ -1,3 +1,4 @@
+import com.github.rejchev.steamid.SteamIDUtils;
 import com.github.rejchev.steamid.exceptions.SteamViewException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -5,29 +6,32 @@ import com.github.rejchev.steamid.SteamID;
 import com.github.rejchev.steamid.SteamIDType;
 import com.github.rejchev.steamid.SteamIDUniverse;
 
+import java.util.Optional;
+
 public class SteamIDTest {
 
     @Test
-    public void steamIDFromSteam3() {
-        SteamID steamID = new SteamID("[U:1:907378852]");
+    public void steamIDFromSteam3() throws SteamViewException {
 
-        SteamID expectedSteamID = new SteamID();
-        expectedSteamID.setInstance((short) 1);
-        expectedSteamID.setType(SteamIDType.INDIVIDUAL);
-        expectedSteamID.setUniverse(SteamIDUniverse.PUBLIC);
-        expectedSteamID.setY((byte) 0);
-        expectedSteamID.setZ(453689426);
+        SteamID steamID = SteamIDUtils.parse("[U:1:907378852]", Optional.empty(), Optional.empty());
 
+        SteamID expectedSteamID = SteamID.builder()
+                .instance(1)
+                .type(SteamIDType.INDIVIDUAL)
+                .universe(SteamIDUniverse.PUBLIC)
+                .y((byte) 0)
+                .z(453689426)
+                .build();
 
         Assert.assertEquals(expectedSteamID, steamID);
     }
 
     @Test
-    public void steamIDFromSteam2() {
-        SteamID steamID = new SteamID("STEAM_1:0:453689426");
+    public void steamIDFromSteam2() throws SteamViewException {
+        SteamID steamID = SteamIDUtils.parse("STEAM_1:0:453689426", Optional.empty(), Optional.empty());
 
         SteamID expectedSteamID = new SteamID();
-        expectedSteamID.setInstance((short) 1);
+        expectedSteamID.setInstance(1);
         expectedSteamID.setType(SteamIDType.INDIVIDUAL);
         expectedSteamID.setUniverse(SteamIDUniverse.PUBLIC);
         expectedSteamID.setY((byte) 0);
@@ -43,7 +47,7 @@ public class SteamIDTest {
         SteamID steamID = new SteamID(76561198867644580L);
 
         SteamID expectedSteamID = new SteamID();
-        expectedSteamID.setInstance((short) 1);
+        expectedSteamID.setInstance(1);
         expectedSteamID.setType(SteamIDType.INDIVIDUAL);
         expectedSteamID.setUniverse(SteamIDUniverse.PUBLIC);
         expectedSteamID.setY((byte) 0);
@@ -58,7 +62,7 @@ public class SteamIDTest {
         SteamID steamID;
 
         try{
-            steamID = new SteamID(76561L);
+            steamID = new SteamID(-1);
         } catch(SteamViewException e) {
             steamID = null;
         }
