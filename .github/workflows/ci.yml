@@ -46,12 +46,13 @@ jobs:
 
     - name: View tree
       run: |
-        ls -a
+        ls ./target -a
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ubuntu-latest
+        name: '*.jar'
+        path: ./target
 
   release:
     name: release
