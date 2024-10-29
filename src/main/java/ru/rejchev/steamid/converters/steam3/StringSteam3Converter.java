@@ -1,6 +1,8 @@
 package ru.rejchev.steamid.converters.steam3;
 
 import ru.rejchev.steamid.SteamID;
+import ru.rejchev.steamid.SteamIDAccountType;
+import ru.rejchev.steamid.SteamIDUniverse;
 import ru.rejchev.steamid.converters.base.AStringSteamIDConverter;
 
 import java.util.Arrays;
@@ -14,7 +16,8 @@ public class StringSteam3Converter extends AStringSteamIDConverter {
     public static final Pattern BasePattern = Pattern
             .compile("\\[(?<type>[AGMPCgcLTIUai]):(?<universe>[0-4]):(?<account>[0-9]+)(:(?<instance>[0-9]+))?]");
 
-    public static final String[] RequiredBinds = { "type", "universe", "account", "instance" };
+    public static final String[] RequiredBinds = { "type", "universe", "account" };
+    public static final String[] OptionalBinds = { "instance" };
 
     public static StringSteam3Converter of(Pattern... patterns) {
         if(patterns != null)
@@ -37,7 +40,15 @@ public class StringSteam3Converter extends AStringSteamIDConverter {
             return null;
 
         // TODO: ...
-        try {  }
+        try { steamID
+                .setAccountId((Long.parseUnsignedLong(getMatcher().group(RequiredBinds[2]))))
+                .setInstance(1)
+                .setAccountUniverse(SteamIDUniverse.values()[Integer.parseUnsignedInt(getMatcher().group(RequiredBinds[1]))])
+                .setAccountType(SteamIDAccountType.of(Integer.parseUnsignedInt(getMatcher().group(OptionalBinds[0]))));
+
+                if(getMatcher().group(OptionalBinds[1]) != null)
+                    steamID.setInstance(Long.parseUnsignedLong(getMatcher().group(OptionalBinds[0])));
+        }
         catch (NumberFormatException e) { return null; }
 
         return steamID;
