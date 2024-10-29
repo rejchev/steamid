@@ -52,7 +52,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ubuntu-latest
-        path: target/package
+        path: ./target
 
   release:
     name: release
