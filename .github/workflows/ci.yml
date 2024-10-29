@@ -63,6 +63,14 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
 
+      - name: Peek
+        run: |
+          ls -a
+
+      - name: Step In
+        run: |
+          cd ./ubuntu-latest
+
       - name: Release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -70,3 +78,9 @@ jobs:
           file: '*.jar'
           tag: ${{ github.ref }}
           file_glob: true
+
+#  deploy:
+#    name: deploy
+#    if: startsWith(github.ref, 'refs/tags/')
+#    needs: release
+#    runs-on: ubuntu-latest
