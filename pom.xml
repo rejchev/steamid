@@ -45,4 +45,12 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>Github Packages</name>
+            <url>https://maven.pkg.github.com/rejchev/${project.artifactId}</url>
+        </repository>
+    </distributionManagement>
 </project>
