@@ -42,7 +42,7 @@ public final class SteamID {
     }
 
     /**
-     * Create {@link SteamID} via Community ID (32 bits) or SteamID (64 bits)
+     * Create {@link SteamID} via steam32 or steam64
      *
      * @param steamId steamID 32/64 bit representation (example: {@code 76561198188347379} or {@code 228081651})
      */
@@ -54,13 +54,13 @@ public final class SteamID {
      * Create {@link SteamID} via Steam32 & Instance
      *
      * @param uAccountId Steam Community ID (32 bits) representation
-     * @param uInstance Instance of the account
+     * @param uInstance 20bits of account instance
      *
      * @see <a href="https://developer.valvesoftware.com/wiki/SteamID">SteamID</a>
      * -> ID as a Steam Community ID (constant <b>W</b>)
      * @since 1.0
      */
-    public SteamID(long uAccountId, long uInstance) {
+    public SteamID(long uAccountId, int uInstance) {
         this(0);
 
         setAccountId(uAccountId);
@@ -71,31 +71,31 @@ public final class SteamID {
      * Create {@link SteamID} via Steam Community ID (32 bits) & Instance & Universe
      *
      * @param uAccountId Steam Community ID (32 bits) representation
-     * @param uInstance instance of the account
-     * @param eUniverse steam account universe
+     * @param uInstance 20bits of account instance
+     * @param unUniverse 8bits of account universe
      *
      * @since 1.0
      */
-    public SteamID(long uAccountId, long uInstance, SteamIDUniverse eUniverse) {
+    public SteamID(long uAccountId, int uInstance, int unUniverse) {
         this(uAccountId, uInstance);
 
-        setAccountUniverse(eUniverse);
+        setAccountUniverse(unUniverse);
     }
 
     /**
      * Create {@link SteamID} via Steam Community ID (32 bits) & Instance & Universe
      *
      * @param uAccountId Steam Community ID (32 bits) representation
-     * @param uInstance instance of the account
-     * @param eUniverse steam account universe
-     * @param eAccountType type of account
+     * @param uInstance 20bits of account instance
+     * @param unUniverse 8bits of account universe
+     * @param unAccountType 4bits of account type
      *
      * @since 1.0
      */
-    public SteamID(long uAccountId, long uInstance, SteamIDUniverse eUniverse, SteamIDAccountType eAccountType) {
-        this(uAccountId, uInstance, eUniverse);
+    public SteamID(long uAccountId, int uInstance, int unUniverse, int unAccountType) {
+        this(uAccountId, uInstance, unUniverse);
 
-        setAccountType(eAccountType);
+        setAccountType(unAccountType);
     }
 
     /**
@@ -125,36 +125,32 @@ public final class SteamID {
      *
      * @see SteamIDMaskType#AccountInstance
      */
-    public long getInstance() {
-        return steamId.get(SteamIDMaskType.AccountInstance.getOffset(), SteamIDMaskType.AccountInstance.getMask());
+    public int getInstance() {
+        return (int)steamId.get(SteamIDMaskType.AccountInstance.getOffset(), SteamIDMaskType.AccountInstance.getMask());
     }
 
     /**
      * Getting an account type (4 bits)
      *
-     * @return {@link SteamIDAccountType}
+     * @return 4bits of account type
      *
      * @see SteamIDMaskType#AccountType
+     * @see SteamIDAccountType
      */
-    public SteamIDAccountType getAccountType() {
-        return SteamIDAccountType.of((int) steamId.get(
-                SteamIDMaskType.AccountType.getOffset(),
-                SteamIDMaskType.AccountType.getMask()
-        ));
+    public int getAccountType() {
+        return (int)steamId.get(SteamIDMaskType.AccountType.getOffset(), SteamIDMaskType.AccountType.getMask());
     }
 
     /**
      * Getting an account universe (8 bits)
      *
-     * @return {@link SteamIDUniverse}
+     * @return 8bits of account universe
      *
      * @see SteamIDMaskType#AccountUniverse
+     * @see SteamIDUniverse
      */
-    public SteamIDUniverse getAccountUniverse() {
-        return SteamIDUniverse.values()[(int) steamId.get(
-                SteamIDMaskType.AccountUniverse.getOffset(),
-                SteamIDMaskType.AccountUniverse.getMask()
-        )];
+    public int getAccountUniverse() {
+        return (int)steamId.get(SteamIDMaskType.AccountUniverse.getOffset(), SteamIDMaskType.AccountUniverse.getMask());
     }
 
     /**
@@ -164,12 +160,7 @@ public final class SteamID {
      * @return self {@link SteamID}
      */
     public SteamID setAccountId(long accountId) {
-        steamId.set(
-                (accountId & SteamIDMaskType.AccountID.getMask()),
-                SteamIDMaskType.AccountID.getOffset(),
-                SteamIDMaskType.AccountID.getMask()
-        );
-
+        steamId.set(accountId, SteamIDMaskType.AccountID.getOffset(), SteamIDMaskType.AccountID.getMask());
         return this;
     }
 
@@ -180,40 +171,33 @@ public final class SteamID {
      * @return self {@link SteamID}
      */
     public SteamID setInstance(long instance) {
-        steamId.set(
-                (instance & SteamIDMaskType.AccountInstance.getMask()),
-                SteamIDMaskType.AccountInstance.getOffset(),
-                SteamIDMaskType.AccountInstance.getMask()
-        );
-
+        steamId.set(instance, SteamIDMaskType.AccountInstance.getOffset(), SteamIDMaskType.AccountInstance.getMask());
         return this;
     }
 
     /**
      * Setting an account type (4 bits)
      *
-     * @param accountType account type (on {@code null} is {@link SteamIDAccountType#Invalid})
+     * @param unAccountType 4bits of account type
      * @return self {@link SteamID}
+     *
+     * @see SteamIDAccountType
      */
-    public SteamID setAccountType(SteamIDAccountType accountType) {
-        steamId.set(accountType == null ? SteamIDAccountType.Invalid.ordinal() : accountType.ordinal(),
-                SteamIDMaskType.AccountType.getOffset(),
-                SteamIDMaskType.AccountType.getMask());
-
+    public SteamID setAccountType(int unAccountType) {
+        steamId.set(unAccountType, SteamIDMaskType.AccountType.getOffset(), SteamIDMaskType.AccountType.getMask());
         return this;
     }
 
     /**
      * Setting an account universe (8 bits)
      *
-     * @param eUniverse universe (on {@code null} is {@link SteamIDUniverse#Invalid})
+     * @param unUniverse 8bits of account universe
      * @return self {@link SteamID}
+     *
+     * @see SteamIDUniverse
      */
-    public SteamID setAccountUniverse(SteamIDUniverse eUniverse) {
-        steamId.set(eUniverse == null ? SteamIDUniverse.Invalid.ordinal() : eUniverse.ordinal(),
-                SteamIDMaskType.AccountUniverse.getOffset(),
-                SteamIDMaskType.AccountUniverse.getMask());
-
+    public SteamID setAccountUniverse(int unUniverse) {
+        steamId.set(unUniverse, SteamIDMaskType.AccountUniverse.getOffset(), SteamIDMaskType.AccountUniverse.getMask());
         return this;
     }
 
@@ -229,9 +213,9 @@ public final class SteamID {
      * @return data without instance
      */
     public long getStaticAccountKey() {
-        return ((long)getAccountUniverse().ordinal() << SteamIDMaskType.AccountUniverse.getOffset()) +
-                ((long) getAccountType().ordinal() << SteamIDMaskType.AccountType.getOffset()) +
-                getAccountID();
+        return ((long)getAccountUniverse() << SteamIDMaskType.AccountUniverse.getOffset())
+            +  ((long)getAccountType() << SteamIDMaskType.AccountType.getOffset())
+            +  getAccountID();
     }
 
     @Override
