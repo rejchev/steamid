@@ -2,7 +2,6 @@ package ru.rejchev.steamid.converters.steam2;
 
 import ru.rejchev.steamid.SteamID;
 import ru.rejchev.steamid.SteamIDAccountType;
-import ru.rejchev.steamid.SteamIDUniverse;
 import ru.rejchev.steamid.converters.base.AStringSteamIDConverter;
 
 import java.util.*;
@@ -41,8 +40,8 @@ public class StringSteam2Converter extends AStringSteamIDConverter {
         try { steamID
                 .setAccountId((Long.parseLong(getMatcher().group("accountid")) << 1) | Integer.parseInt(getMatcher().group("authserver")))
                 .setInstance(1)
-                .setAccountUniverse(SteamIDUniverse.values()[Integer.parseInt(getMatcher().group("universe"))])
-                .setAccountType(SteamIDAccountType.Individual);
+                .setAccountUniverse(Integer.parseInt(getMatcher().group("universe")))
+                .setAccountType(SteamIDAccountType.Number.Individual.ordinal());
         } catch (NumberFormatException e) { return null; }
 
         return steamID;

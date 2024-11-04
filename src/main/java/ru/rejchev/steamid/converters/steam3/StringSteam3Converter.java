@@ -1,13 +1,9 @@
 package ru.rejchev.steamid.converters.steam3;
 
-import ru.rejchev.steamid.SteamID;
-import ru.rejchev.steamid.SteamIDAccountType;
-import ru.rejchev.steamid.SteamIDMaskType;
-import ru.rejchev.steamid.SteamIDUniverse;
+import ru.rejchev.steamid.*;
 import ru.rejchev.steamid.converters.base.AStringSteamIDConverter;
 
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringSteam3Converter extends AStringSteamIDConverter {
@@ -45,28 +41,20 @@ public class StringSteam3Converter extends AStringSteamIDConverter {
             if((buff = getMatcher().group(RequiredBinds[0])) == null || buff.length() != 1)
                 return null;
 
-            char type = buff.charAt(0);
-
-            long instance = (type != 'g' && type != 'T' && type != 'c' && type != 'L') ? 0 : 1;
-
-            if((buff = getMatcher().group(OptionalBinds[0])) != null && !buff.isEmpty())
-                instance = Long.parseLong(buff);
-
-            if(type == 'c') {
-                instance |= ((SteamIDMaskType.AccountInstance.getMask() + 1) >> 1);
-                type = SteamIDAccountType.Chat.getChar();
-            }
-
-            if(type == 'L') {
-                instance |= ((SteamIDMaskType.AccountInstance.getMask() + 1) >> 2);
-                type = SteamIDAccountType.Chat.getChar();
-            }
+            SteamIDAccountType.Holder type = SteamIDRegistry.types().getBySignature(buff.charAt(0));
 
             steamID
-                .setAccountId((Long.parseUnsignedLong(getMatcher().group(RequiredBinds[2]))))
-                .setInstance(instance)
-                .setAccountUniverse(SteamIDUniverse.values()[Integer.parseUnsignedInt(getMatcher().group(RequiredBinds[1]))])
-                .setAccountType((type == SteamIDAccountType.InvalidCharacter) ? SteamIDAccountType.Invalid : SteamIDAccountType.of(type));
+                .setAccountId(Long.parseUnsignedLong(getMatcher().group(RequiredBinds[2])))
+                .setAccountUniverse(Integer.parseUnsignedInt(getMatcher().group(RequiredBinds[1])))
+                .setAccountType(type.id());
+
+            if((buff = getMatcher().group(OptionalBinds[0])) != null && !buff.isEmpty())
+                return steamID.setInstance(Long.parseUnsignedLong(buff));
+
+            if(type.id() != SteamIDAccountType.Number.Chat.ordinal())
+                return steamID.setInstance(((isZeroInstanceType(type)) ? 0 : 1));
+
+            steamID.setInstance((type.data(Object.class) instanceof Long data) ? data : 0);
         }
         catch (NumberFormatException e) { return null; }
 
@@ -76,5 +64,11 @@ public class StringSteam3Converter extends AStringSteamIDConverter {
     @Override
     public StringSteam3Converter add(Collection<? extends Pattern> patterns) {
         return (StringSteam3Converter) super.add(patterns);
+    }
+
+    // g; T; L; c
+    private boolean isZeroInstanceType(SteamIDAccountType.Holder t) {
+        return t.id() == SteamIDAccountType.Number.Clan.ordinal()
+            || t.id() == SteamIDAccountType.Number.Chat.ordinal();
     }
 }
