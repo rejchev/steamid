@@ -35,11 +35,14 @@ public class BitVector64 {
 
     /**
      * @param value some value to write in {@link BitVector64#data}
-     * @param offset power of unsigned right shift
+     * @param offset power of unsigned left shift
      * @param mask bit mask (e.g. *Mask {@link SteamID} constants)
+     *
+     * @return this object
      */
-    public void set(long value, char offset, long mask) {
+    public BitVector64 set(long value, char offset, long mask) {
         data = (data & ~(mask << offset)) | ((value & mask) << offset);
+        return this;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class BitVector64 {
     }
 
     /**
-     * @return {@link SteamID.BitVector64#data()}
+     * @return {@link BitVector64#data()}
      */
     @Override
     public String toString() {
