@@ -32,7 +32,7 @@ jobs:
       run: mvn -B clean package -DskipTests
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ubuntu-latest
         path: ./target
