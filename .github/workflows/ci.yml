@@ -24,7 +24,7 @@ jobs:
         python -m pip install --upgrade pip PyGithub
 
     - name: Run python joke
-      run: python -c "import Github; g = Github(${{ secrets.GITHUB_TOKEN }}); repo = g.get_repo('rejchev/steamid'); print(repo.get_contributors())"
+      run: python -c "from github import Github; g = Github(${{ secrets.GITHUB_TOKEN }}); repo = g.get_repo('rejchev/steamid'); print(repo.get_contributors())"
 
     - name: Run mvn check
       run: mvn -B clean checkstyle:check
