@@ -1,0 +1,17 @@
+name: Trello on issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    name: Create Trello Card
+    steps:
+      - name: Link to Trello
+        uses: kagof/trello-link-github-action@v1.1.0
+        with:
+          board-identifier: "${{ secrets.TRELLO_BOARD }}"
+          trello-token: "${{ secrets.TRELLO_APP }}"
+          marker: 'TRELLO-'
